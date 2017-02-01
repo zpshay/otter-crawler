@@ -1,20 +1,16 @@
 import scrapy
 
 
-class QuotesSpider(scrapy.Spider):
-    name = "quotes"
+class NflSpider(scrapy.Spider):
+    name = "NFL"
 
-    def start_requests(self):
-        urls = [
-            'http://nfl.com'
+    start_urls = [
+        'http://www.nfl.com/news/story/0ap3000000781590/article/julio-jones-no-one-in-nfl-can-cover-me-oneonone'
             ]
 
-        for url in urls:
-            yield scrapy.Request(url=url, callback=self.parse)
+    def pares(self, response):
+        for NFL in response.css('title'):
+            yield{
+                'title': NFL.css('//title::text').extract_first()
 
-    def parse(self, response):
-        page = response.url.split("/")[-2]
-        filename = 'quotes-%s.html' % page
-        with open(filename, 'wb') as f:
-            f.write(response.body)
-        self.log('Saved file %s' % filename)
+            }
