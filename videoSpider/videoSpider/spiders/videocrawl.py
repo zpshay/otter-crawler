@@ -6,7 +6,10 @@ Created on Fri Feb  3 11:35:25 2017
 """
 
 import scrapy
-
+from flask import Flask
+app = Flask(__name__)
+@app.route("/")
+    
 class videoCrawl(scrapy.Spider):
     name = "video"
 
@@ -39,3 +42,6 @@ class videoCrawl(scrapy.Spider):
                 yield{
                     'video': full_url
                 }
+
+if __name__ == "__main__":
+    app.run()
