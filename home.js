@@ -18,8 +18,8 @@ app.post('/', function(req, res){
 	amqp.connect('amqp://localhost', function(err, conn) {
   	conn.createChannel(function(err, ch) {
     var q = 'hello';
-    var msg = JSON.stringify(req.body);
-    var noQuote = msg.split('"').join('');
+    var msg = JSON.stringify(req.body.URL);
+   	var noQuote = msg.split('"').join('');
 
     ch.assertQueue(q, {durable: false});
     // Note: on Node 6 Buffer.from(msg) should be used
