@@ -31,4 +31,3 @@ virtualenvwrapper==4.7.1
 w3lib==1.16.0
 Werkzeug==0.9.4
 zope.interface==4.3.3
-wsgiref>=0.1.2
