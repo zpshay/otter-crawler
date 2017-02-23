@@ -10,7 +10,7 @@ from flask import Flask
 app = Flask(__name__)
 @app.route("/")
     
-class videoCrawl(scrapy.Spider):
+class VideoCrawl(scrapy.Spider):
     name = "video"
 
     start_urls = [
