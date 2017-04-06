@@ -7,9 +7,9 @@ Created on Fri Feb  3 11:35:25 2017
 import scrapy
 import json
 import pika
-import os
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(host=os.environ['RABBITMQ_BIGWIG_URL']))
+
+connection = pika.BlockingConnection(pika.ConnectionParameters("amqp://I6OKfqTw:PEoYPQeomvtOQ55pEnVZuZsUNd9vildL@trapped-vilthuril-1.bigwig.lshift.net:10112/kSwiRErgrSlK"))
 channel = connection.channel()
 
 channel.queue_declare(queue='hello')
