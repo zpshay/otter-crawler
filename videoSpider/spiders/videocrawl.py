@@ -7,8 +7,9 @@ Created on Fri Feb  3 11:35:25 2017
 import scrapy
 import json
 import pika
+import os
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(host='amqp://I6OKfqTw:PEoYPQeomvtOQ55pEnVZuZsUNd9vildL@trapped-vilthuril-1.bigwig.lshift.net:10112/kSwiRErgrSlK'))
+connection = pika.BlockingConnection(pika.ConnectionParameters(host=os.environ['RABBITMQ_BIGWIG_URL']))
 channel = connection.channel()
 
 channel.queue_declare(queue='hello')
@@ -29,6 +30,10 @@ app = Flask(__name__)
 class VideoCrawl(scrapy.Spider):
     name = "video"
             
+    start_urls = [
+    'https://www.w3schools.com/tags/tag_video.asp' 
+    ]
+    
     def parse(self, response):
      # follow links to author pages
         for href in response.css(' a::attr(href)').extract():
