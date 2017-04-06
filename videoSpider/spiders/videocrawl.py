@@ -18,7 +18,7 @@ def get_env_variable(var_name):
 """ RABBIT MQ CODE """
 url = get_env_variable('RABBITMQ_BIGWIG_URL')
 url_params = pika.URLParameters(url)
-connection = pika.BlockingConnection(url_params)
+connection = pika.Connection(url_params)
 channel = connection.channel()
 channel.queue_declare(queue='hello')
 
