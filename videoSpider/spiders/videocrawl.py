@@ -7,11 +7,19 @@ Created on Fri Feb  3 11:35:25 2017
 import scrapy
 import json
 import pika
+import os
 
+def get_env_variable(var_name):
+    try:
+        return os.environ[var_name]
+    except Exception:
+        pass
 
-connection = pika.BlockingConnection(pika.ConnectionParameters("amqp://I6OKfqTw:PEoYPQeomvtOQ55pEnVZuZsUNd9vildL@trapped-vilthuril-1.bigwig.lshift.net:10112/kSwiRErgrSlK"))
+""" RABBIT MQ CODE """
+url = get_env_variable('RABBITMQ_BIGWIG_URL')
+url_params = pika.URLParameters(url)
+connection = pika.Connection(url_params)
 channel = connection.channel()
-
 channel.queue_declare(queue='hello')
 
 def callback(ch, method, properties, body):
@@ -23,6 +31,7 @@ channel.basic_consume(callback,
 print(' [*] Waiting for messages. To exit press CTRL+C')
 channel.start_consuming()
 
+"""WRAP PYTHON CODE IN FLASK"""
 from flask import Flask
 app = Flask(__name__)
 @app.route("/")
