@@ -24,6 +24,8 @@ channel.queue_declare(queue='hello')
 
 def callback(ch, method, properties, body):
     print(" [x] Received %r" % body)
+    global url_string
+    url_string = body
 channel.basic_consume(callback,
                       queue='hello',
                       no_ack=True)
@@ -40,7 +42,7 @@ class VideoCrawl(scrapy.Spider):
     name = "video"
             
     start_urls = [
-    'https://www.w3schools.com/tags/tag_video.asp' 
+    url_string 
     ]
     
     def parse(self, response):
