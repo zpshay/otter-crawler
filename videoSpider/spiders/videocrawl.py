@@ -52,15 +52,15 @@ class VideoCrawl(scrapy.Spider):
     url_string
     ]
     
-    @app.route("/", methods=['POST'])
+    @app.route("/", methods=['GET','POST'])
     def parse(self, response):
      # follow links to author pages
         for href in response.css(' a::attr(href)').extract():
             yield scrapy.Request(response.urljoin(href),
                                  callback=self.parse_video)
-        return
+        return ''
         
-    @app.route('/', methods=['POST'])
+    @app.route('/', methods=['GET','POST'])
     def parse_video(self, response):
         for video in response.css('video'):
             http_exists = video.xpath('./source/@src').extract_first()[:4]
@@ -89,7 +89,7 @@ class VideoCrawl(scrapy.Spider):
                         yield{
                             'video': full_url
                         }
-        return
-
-if __name__ == "__main__":
-    app.run()
+        return ''
+        
+    if __name__ == "__main__":
+        app.run()
