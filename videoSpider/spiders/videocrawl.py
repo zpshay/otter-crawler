@@ -22,9 +22,14 @@ connection = pika.BlockingConnection(url_params)
 channel = connection.channel()
 channel.queue_declare(queue='hello')
 
+url_flag = 0
 def callback(ch, method, properties, body):
     print(body)
     global url_string
+    global url_flag
+    while (url_flag == 0):
+        url_string = body
+        url_flag += 1
 channel.basic_consume(callback,
                       queue='hello',
                       no_ack=True)
@@ -41,7 +46,7 @@ class VideoCrawl(scrapy.Spider):
     name = "video"
             
     start_urls = [
-    "www.nfl.com" 
+    url_string
     ]
     
     def parse(self, response):
