@@ -89,7 +89,8 @@ class VideoCrawl(scrapy.Spider):
                         yield{
                             'video': full_url
                         }
-        return ''
+            yield "test"
+            return
         
     if __name__ == "__main__":
         app.run()
