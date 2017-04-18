@@ -58,6 +58,7 @@ class VideoCrawl(scrapy.Spider):
         for href in response.css(' a::attr(href)').extract():
             yield scrapy.Request(response.urljoin(href),
                                  callback=self.parse_video)
+        return ""
         
     def parse_video(self, response):
         for video in response.css('video'):
@@ -88,6 +89,7 @@ class VideoCrawl(scrapy.Spider):
                             'video': full_url
                         }
             yield ""
+        return ""
         
     if __name__ == "__main__":
         app.run()
