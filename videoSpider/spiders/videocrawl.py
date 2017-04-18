@@ -39,26 +39,28 @@ def callback(ch, method, properties, body):
 channel.basic_consume(callback,
                       queue='hello',
                       no_ack=True)
-
-"""WRAP PYTHON CODE IN FLASK"""
-from flask import Flask
-app = Flask(__name__)
-@app.route("/")
     
 class VideoCrawl(scrapy.Spider):
+
+    """WRAP PYTHON CODE IN FLASK"""
+    from flask import Flask
+    app = Flask(__name__)    
+    
     name = "video"
     global url_string
     start_urls = [
     url_string
     ]
     
+    @app.route("/", methods=['POST'])
     def parse(self, response):
      # follow links to author pages
         for href in response.css(' a::attr(href)').extract():
             yield scrapy.Request(response.urljoin(href),
                                  callback=self.parse_video)
         return
-
+        
+    @app.route('/', methods=['POST'])
     def parse_video(self, response):
         for video in response.css('video'):
             http_exists = video.xpath('./source/@src').extract_first()[:4]
