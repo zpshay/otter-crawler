@@ -23,7 +23,7 @@ channel = connection.channel()
 channel.queue_declare(queue='hello')
 
 def callback(ch, method, properties, body):
-    print(" [x] Received %r" % body)
+    print(body)
     global url_string
 channel.basic_consume(callback,
                       queue='hello',
