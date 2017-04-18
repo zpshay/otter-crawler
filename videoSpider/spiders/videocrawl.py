@@ -22,6 +22,10 @@ connection = pika.BlockingConnection(url_params)
 channel = connection.channel()
 channel.queue_declare(queue='hello')
 
+print(' [*] Waiting for messages. To exit press CTRL+C')
+channel.start_consuming()
+
+
 url_flag = 0
 def callback(ch, method, properties, body):
     print(body)
@@ -30,12 +34,10 @@ def callback(ch, method, properties, body):
     while (url_flag == 0):
         url_string = body
         url_flag += 1
+        connection.close()
 channel.basic_consume(callback,
                       queue='hello',
                       no_ack=True)
-
-print(' [*] Waiting for messages. To exit press CTRL+C')
-channel.start_consuming()
 
 """WRAP PYTHON CODE IN FLASK"""
 from flask import Flask
