@@ -27,6 +27,7 @@ channel.start_consuming()
 
 
 url_flag = 0
+url_string = ""
 def callback(ch, method, properties, body):
     print(body)
     global url_string
@@ -46,7 +47,7 @@ app = Flask(__name__)
     
 class VideoCrawl(scrapy.Spider):
     name = "video"
-            
+    global url_string
     start_urls = [
     url_string
     ]
