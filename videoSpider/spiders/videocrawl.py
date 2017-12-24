@@ -7,59 +7,34 @@ Created on Fri Feb  3 11:35:25 2017
 import scrapy
 import json
 import pika
-import os
 
-def get_env_variable(var_name):
-    try:
-        return os.environ[var_name]
-    except Exception:
-        pass
-
-""" RABBIT MQ CODE """
-url = get_env_variable('RABBITMQ_BIGWIG_URL')
-url_params = pika.URLParameters(url)
-connection = pika.BlockingConnection(url_params)
+connection = pika.BlockingConnection(pika.ConnectionParameters(host=''))
 channel = connection.channel()
+
 channel.queue_declare(queue='hello')
+
+def callback(ch, method, properties, body):
+    print(" [x] Received %r" % body)
+channel.basic_consume(callback,
+                      queue='hello',
+                      no_ack=True)
 
 print(' [*] Waiting for messages. To exit press CTRL+C')
 channel.start_consuming()
 
-
-url_flag = 0
-url_string = ""
-def callback(ch, method, properties, body):
-    print(body)
-    global url_string
-    global url_flag
-    while (url_flag == 0):
-        url_string = body
-        url_flag += 1
-        connection.close()
-channel.basic_consume(callback,
-                      queue='hello',
-                      no_ack=True)
+from flask import Flask
+app = Flask(__name__)
+@app.route("/")
     
 class VideoCrawl(scrapy.Spider):
-
-    """WRAP PYTHON CODE IN FLASK"""
-    from flask import Flask
-    app = Flask(__name__)    
-    
     name = "video"
-    global url_string
-    start_urls = [
-    url_string
-    ]
-    
-    @app.route('/parse', methods=['GET','POST'])
+            
     def parse(self, response):
      # follow links to author pages
         for href in response.css(' a::attr(href)').extract():
             yield scrapy.Request(response.urljoin(href),
                                  callback=self.parse_video)
-        return ""
-        
+
     def parse_video(self, response):
         for video in response.css('video'):
             http_exists = video.xpath('./source/@src').extract_first()[:4]
@@ -88,7 +63,6 @@ class VideoCrawl(scrapy.Spider):
                         yield{
                             'video': full_url
                         }
-        return ""
-        
-    if __name__ == "__main__":
-        app.run()
+
+if __name__ == "__main__":
+    app.run()
